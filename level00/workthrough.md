@@ -1,5 +1,5 @@
 # LEVEL00
-**Info level protect option**
+**Info: level protect option**
 ```sh
 RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
 Partial RELRO   No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   /home/users/level00/level00

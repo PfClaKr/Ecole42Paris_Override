@@ -35,7 +35,18 @@ Check it with GDB,
 0x0804885a  main
 ...
 ```
+Let's start with analyzing the code. \
+We can see that a variable of type int, let's name it password, is taking our only input, then it will be later compared with some predefined constant number ```322424845```, then it will be passed to function ```test```.
 ```sh
+   0x080488c6 <+108>:   mov    0x1c(%esp),%eax
+   0x080488ca <+112>:   movl   $0x1337d00d,0x4(%esp) # 322424845
+   0x080488d2 <+120>:   mov    %eax,(%esp)
+   0x080488d5 <+123>:   call   0x8048747 <test> # test(var int, 322424845)
+```
+In this function we can find switch statement. It has 1~9 16~21 cases and we can verify them by looking at the jump table
+```sh
+0x0804876c <+37>:    add    $0x80489f0,%eax
+...
 (gdb) x/30x 0x80489f0
 0x80489f0:      0x0804884a      0x08048775      0x08048785      0x08048795
 0x8048a00:      0x080487a5      0x080487b5      0x080487c5      0x080487d5
@@ -45,6 +56,31 @@ Check it with GDB,
 0x8048a40:      0x08048830      0x0804883d      0x2a2a2a2a      0x2a2a2a2a
 0x8048a50:      0x2a2a2a2a      0x2a2a2a2a      0x2a2a2a2a      0x2a2a2a2a
 ```
+So it does mean that constant number ```322424845``` substract our password is the case we are going in, to the function ```decrypt```. \
+So we try to get inside of every case by "brute forcing" it. \
+To achive this we simply substract offset from the number ```322424845```. \
+We can make it easier by writing a python script and find all results.
+```sh
+```
+Found at 18. By giving input ```322424827``` will give us a ```/bin/sh```. \
+Now we can find our flag
+```sh
+level03@OverRide:~$ ./level03 
+***********************************
+*               level03         **
+***********************************
+Password:322424827
+$ cat /home/users/level04/.pass
+(hidden)
+$ 
+level03@OverRide:~$ su level04
+Password: 
+```
+level03 passed !
+
+assmebly analayse
+---
+
 ```sh
 (gdb) disas decrypt
 Dump of assembler code for function decrypt:

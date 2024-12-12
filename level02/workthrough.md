@@ -28,8 +28,7 @@ level02@OverRide:~$ ./level02
 ```
 We can find one excutable file **level02**, who take standard input with Username and Password. \
 \
-Check it with GDB, \
-\
+Check it with GDB,
 ```sh
 level02@OverRide:~$ gdb ./level02 
 (gdb) r
@@ -155,7 +154,7 @@ Dump of assembler code for function main:
    0x00000000004008ca <+182>:   mov    $0x24,%edx # 36
    0x00000000004008cf <+187>:   mov    $0x1,%esi # 1
    0x00000000004008d4 <+192>:   mov    %rax,%rdi
-   0x00000000004008d7 <+195>:   callq  0x400720 <fwrite@plt> # fwrite("ERROR: faile to open password file\n", 1, 24, stderr)
+   0x00000000004008d7 <+195>:   callq  0x400720 <fwrite@plt> # fwrite("ERROR: faile to open password file\n", 1, 36, stderr)
    0x00000000004008dc <+200>:   mov    $0x1,%edi
    0x00000000004008e1 <+205>:   callq  0x400710 <exit@plt> # exit(1)
    0x00000000004008e6 <+210>:   lea    -0xa0(%rbp),%rax # buffer[48]
@@ -164,7 +163,7 @@ Dump of assembler code for function main:
    0x00000000004008f4 <+224>:   mov    $0x29,%edx # 41
    0x00000000004008f9 <+229>:   mov    $0x1,%esi
    0x00000000004008fe <+234>:   mov    %rax,%rdi #register convention  rdi rsi rdx rcx         r8 r9
-   0x0000000000400901 <+237>:   callq  0x400690 <fread@plt> # fread(file_buffer, 41, 1, file stream)
+   0x0000000000400901 <+237>:   callq  0x400690 <fread@plt> # fread(file_buffer, 1, 41, file stream)
    0x0000000000400906 <+242>:   mov    %eax,-0xc(%rbp)
    0x0000000000400909 <+245>:   lea    -0xa0(%rbp),%rax
    0x0000000000400910 <+252>:   mov    $0x400bf5,%esi
@@ -175,32 +174,32 @@ Dump of assembler code for function main:
    0x0000000000400929 <+277>:   je     0x40097d <main+361>
    0x000000000040092b <+279>:   mov    0x20091e(%rip),%rax        # 0x601250 <stderr@@GLIBC_2.2.5>
    0x0000000000400932 <+286>:   mov    %rax,%rdx
-   0x0000000000400935 <+289>:   mov    $0x400bf8,%eax
+   0x0000000000400935 <+289>:   mov    $0x400bf8,%eax # "ERROR: failed to read password file\n"
    0x000000000040093a <+294>:   mov    %rdx,%rcx
-   0x000000000040093d <+297>:   mov    $0x24,%edx
+   0x000000000040093d <+297>:   mov    $0x24,%edx # 36
    0x0000000000400942 <+302>:   mov    $0x1,%esi
    0x0000000000400947 <+307>:   mov    %rax,%rdi
-   0x000000000040094a <+310>:   callq  0x400720 <fwrite@plt>
+   0x000000000040094a <+310>:   callq  0x400720 <fwrite@plt> # fwrite("ERROR: failed to read password file\n", 1, 36, stderr)
    0x000000000040094f <+315>:   mov    0x2008fa(%rip),%rax        # 0x601250 <stderr@@GLIBC_2.2.5>
    0x0000000000400956 <+322>:   mov    %rax,%rdx
-   0x0000000000400959 <+325>:   mov    $0x400bf8,%eax
+   0x0000000000400959 <+325>:   mov    $0x400bf8,%eax # "ERROR: failed to read password file\n"
    0x000000000040095e <+330>:   mov    %rdx,%rcx
    0x0000000000400961 <+333>:   mov    $0x24,%edx
    0x0000000000400966 <+338>:   mov    $0x1,%esi
    0x000000000040096b <+343>:   mov    %rax,%rdi
-   0x000000000040096e <+346>:   callq  0x400720 <fwrite@plt>
+   0x000000000040096e <+346>:   callq  0x400720 <fwrite@plt> # ?? twice same fwrite() +310
    0x0000000000400973 <+351>:   mov    $0x1,%edi
    0x0000000000400978 <+356>:   callq  0x400710 <exit@plt>
    0x000000000040097d <+361>:   mov    -0x8(%rbp),%rax
    0x0000000000400981 <+365>:   mov    %rax,%rdi
-   0x0000000000400984 <+368>:   callq  0x4006a0 <fclose@plt>
-   0x0000000000400989 <+373>:   mov    $0x400c20,%edi
-   0x000000000040098e <+378>:   callq  0x400680 <puts@plt>
-   0x0000000000400993 <+383>:   mov    $0x400c50,%edi
+   0x0000000000400984 <+368>:   callq  0x4006a0 <fclose@plt> # fclose(stream)
+   0x0000000000400989 <+373>:   mov    $0x400c20,%edi #  "===== [ Secure Access System v1.0 ] ====="
+   0x000000000040098e <+378>:   callq  0x400680 <puts@plt> 
+   0x0000000000400993 <+383>:   mov    $0x400c50,%edi #  "/", '*' <repeats 39 times>, "\\"
    0x0000000000400998 <+388>:   callq  0x400680 <puts@plt>
-   0x000000000040099d <+393>:   mov    $0x400c80,%edi
+   0x000000000040099d <+393>:   mov    $0x400c80,%edi #  "| You must login to access this system. |"
    0x00000000004009a2 <+398>:   callq  0x400680 <puts@plt>
-   0x00000000004009a7 <+403>:   mov    $0x400cb0,%edi
+   0x00000000004009a7 <+403>:   mov    $0x400cb0,%edi # "\\", '*' <repeats 38 times>, "/"
    0x00000000004009ac <+408>:   callq  0x400680 <puts@plt>
    0x00000000004009b1 <+413>:   mov    $0x400cd9,%eax #  "--[ Username: "
    0x00000000004009b6 <+418>:   mov    %rax,%rdi
@@ -209,13 +208,13 @@ Dump of assembler code for function main:
    0x00000000004009c3 <+431>:   mov    0x20087e(%rip),%rax        # 0x601248 <stdin@@GLIBC_2.2.5>
    0x00000000004009ca <+438>:   mov    %rax,%rdx
    0x00000000004009cd <+441>:   lea    -0x70(%rbp),%rax # username[96]
-   0x00000000004009d1 <+445>:   mov    $0x64,%esi
+   0x00000000004009d1 <+445>:   mov    $0x64,%esi # 100
    0x00000000004009d6 <+450>:   mov    %rax,%rdi
-   0x00000000004009d9 <+453>:   callq  0x4006f0 <fgets@plt> # fgets()
+   0x00000000004009d9 <+453>:   callq  0x4006f0 <fgets@plt> # fgets(username, 100, stdin)
    0x00000000004009de <+458>:   lea    -0x70(%rbp),%rax
-   0x00000000004009e2 <+462>:   mov    $0x400bf5,%esi
+   0x00000000004009e2 <+462>:   mov    $0x400bf5,%esi # "\n"
    0x00000000004009e7 <+467>:   mov    %rax,%rdi
-   0x00000000004009ea <+470>:   callq  0x4006d0 <strcspn@plt>
+   0x00000000004009ea <+470>:   callq  0x4006d0 <strcspn@plt> # strcpn(username, "\n")
    0x00000000004009ef <+475>:   movb   $0x0,-0x70(%rbp,%rax,1)
    0x00000000004009f4 <+480>:   mov    $0x400ce8,%eax # "--[ Password: "
    0x00000000004009f9 <+485>:   mov    %rax,%rdi
@@ -226,20 +225,20 @@ Dump of assembler code for function main:
    0x0000000000400a10 <+508>:   lea    -0x110(%rbp),%rax # password[128]
    0x0000000000400a17 <+515>:   mov    $0x64,%esi
    0x0000000000400a1c <+520>:   mov    %rax,%rdi
-   0x0000000000400a1f <+523>:   callq  0x4006f0 <fgets@plt> #fegts(,,stdin)
+   0x0000000000400a1f <+523>:   callq  0x4006f0 <fgets@plt> #fegts(password, 100, stdin)
    0x0000000000400a24 <+528>:   lea    -0x110(%rbp),%rax # var password
    0x0000000000400a2b <+535>:   mov    $0x400bf5,%esi # \n
    0x0000000000400a30 <+540>:   mov    %rax,%rdi
    0x0000000000400a33 <+543>:   callq  0x4006d0 <strcspn@plt> # strcspn(var password, \n) # finds \n in password string
    0x0000000000400a38 <+548>:   movb   $0x0,-0x110(%rbp,%rax,1)
-   0x0000000000400a40 <+556>:   mov    $0x400cf8,%edi
+   0x0000000000400a40 <+556>:   mov    $0x400cf8,%edi # '*' <repeats 41 times>
    0x0000000000400a45 <+561>:   callq  0x400680 <puts@plt>
    0x0000000000400a4a <+566>:   lea    -0x110(%rbp),%rcx # var password
    0x0000000000400a51 <+573>:   lea    -0xa0(%rbp),%rax # var file_buffer
    0x0000000000400a58 <+580>:   mov    $0x29,%edx
    0x0000000000400a5d <+585>:   mov    %rcx,%rsi
    0x0000000000400a60 <+588>:   mov    %rax,%rdi
-   0x0000000000400a63 <+591>:   callq  0x400670 <strncmp@plt> # strncmp(var password, var file_buffer, 41)
+   0x0000000000400a63 <+591>:   callq  0x400670 <strncmp@plt> # strncmp(file_buffer, password, 41)
    0x0000000000400a68 <+596>:   test   %eax,%eax # strncmp != 0
    0x0000000000400a6a <+598>:   jne    0x400a96 <main+642>
    0x0000000000400a6c <+600>:   mov    $0x400d22,%eax # "Greetings, %s!\n"

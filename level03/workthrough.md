@@ -48,11 +48,17 @@ In this function we can find switch statement. It has 1~9 16~21 cases and we can
 0x0804876c <+37>:    add    $0x80489f0,%eax
 ...
 (gdb) x/30x 0x80489f0
+				default			1				2				3
 0x80489f0:      0x0804884a      0x08048775      0x08048785      0x08048795
+				4				5				6				7
 0x8048a00:      0x080487a5      0x080487b5      0x080487c5      0x080487d5
+				8				9				10(default)		11(default)
 0x8048a10:      0x080487e2      0x080487ef      0x0804884a      0x0804884a
+				12(default)		13(default)		14(default)		15(default)
 0x8048a20:      0x0804884a      0x0804884a      0x0804884a      0x0804884a
+				16				17				18				19
 0x8048a30:      0x080487fc      0x08048809      0x08048816      0x08048823
+				20				21				end
 0x8048a40:      0x08048830      0x0804883d      0x2a2a2a2a      0x2a2a2a2a
 0x8048a50:      0x2a2a2a2a      0x2a2a2a2a      0x2a2a2a2a      0x2a2a2a2a
 ```
@@ -60,8 +66,6 @@ So it does mean that constant number ```322424845``` substract our password is t
 So we try to get inside of every case by "brute forcing" it. \
 To achive this we simply substract offset from the number ```322424845```. \
 We can make it easier by writing a python script and find all results.
-```sh
-```
 Found at 18. By giving input ```322424827``` will give us a ```/bin/sh```. \
 Now we can find our flag
 ```sh
@@ -176,7 +180,7 @@ Dump of assembler code for function test:
    0x08048760 <+25>:    ja     0x804884a <test+259> # go to default
    0x08048766 <+31>:    mov    -0xc(%ebp),%eax
    0x08048769 <+34>:    shl    $0x2,%eax # (p2 - p1) << 2
-   0x0804876c <+37>:    add    $0x80489f0,%eax
+   0x0804876c <+37>:    add    $0x80489f0,%eax # address of switch table
    0x08048771 <+42>:    mov    (%eax),%eax
    0x08048773 <+44>:    jmp    *%eax
    0x08048775 <+46>:    mov    -0xc(%ebp),%eax
@@ -239,7 +243,7 @@ Dump of assembler code for function test:
    0x08048840 <+249>:   mov    %eax,(%esp)
    0x08048843 <+252>:   call   0x8048660 <decrypt>
    0x08048848 <+257>:   jmp    0x8048858 <test+273>
-   0x0804884a <+259>:   call   0x8048520 <rand@plt>
+   0x0804884a <+259>:   call   0x8048520 <rand@plt> # default:
    0x0804884f <+264>:   mov    %eax,(%esp)
    0x08048852 <+267>:   call   0x8048660 <decrypt>
    0x08048857 <+272>:   nop

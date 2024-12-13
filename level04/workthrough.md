@@ -60,7 +60,8 @@ level04@OverRide:~$ cat /tmp/getenv.c
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[]) {
+int main()
+{
     printf("%p\n", getenv("SHELLCODE"));
 }
 level04@OverRide:/tmp$ gcc -m32 /tmp/getenv.c

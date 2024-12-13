@@ -82,7 +82,7 @@ Password:
 ```
 level03 passed !
 
-assmebly analayse
+assmebly analyze
 ---
 
 ```sh

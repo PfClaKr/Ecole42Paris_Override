@@ -2,6 +2,7 @@
 	"files.associations": {
 		"prctl.h": "c",
 		"types.h": "c",
-		"unistd.h": "c"
+		"unistd.h": "c",
+		"stdio.h": "c"
 	}
 }

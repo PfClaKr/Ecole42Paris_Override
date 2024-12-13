@@ -78,7 +78,7 @@ child is exiting...
 ```
 level04 passed !
 
-assmebly analayse
+assmebly analyze
 ---
 ```sh
 (gdb) disas main

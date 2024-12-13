@@ -99,7 +99,7 @@ Partial RELRO   Canary found      NX enabled    No PIE          No RPATH   No RU
 ```
 level02 passed !
 
-assmebly analayse
+assmebly analyze
 ---
 
 ```sh

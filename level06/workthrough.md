@@ -26,6 +26,7 @@ level06@OverRide:~$ ./level06
 ***********************************
 -> Enter Serial: 42
 ```
+We can find one excutable file **level06**, who takes 2 standard input Login and Serial. \
 Check it with GDB. \
 \
 The program itself has some tangled algorithm, which looks horrible at first sight on machine code. \
@@ -92,6 +93,7 @@ level07
 $ cat /home/users/level07/.pass
 (hidden)
 ```
+level06 passed !
 
 
 assmebly analyze

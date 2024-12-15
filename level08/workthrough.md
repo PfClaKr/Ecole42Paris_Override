@@ -1,4 +1,4 @@
-# LEVEL08 # rdi rsi rdx rcx
+# LEVEL08
 **Info: level protect option**
 ```sh
 RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE

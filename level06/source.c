@@ -43,7 +43,7 @@ int auth(char *str, unsigned int u_int)
 	}
 }
 
-int main()
+int main(void)
 {
 	unsigned int u_int;
 	char str[32];

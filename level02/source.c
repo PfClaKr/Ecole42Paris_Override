@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main()
+int main(void)
 {
 	char username[96];
 	char file_buffer[48];

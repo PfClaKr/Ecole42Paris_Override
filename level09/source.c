@@ -9,7 +9,7 @@ struct s_mail
 	int msg_len;
 };
 
-void secret_backdoor()
+void secret_backdoor(void)
 {
 	char buffer[128];
 
@@ -46,7 +46,7 @@ void set_username(struct s_mail *mail)
 	printf(">: Welcome, %s", mail->username);
 }
 
-void handle_msg()
+void handle_msg(void)
 {
 	struct s_mail mail;
 
@@ -58,7 +58,7 @@ void handle_msg()
 	puts(">: Msg sent!");
 }
 
-int main()
+int main(void)
 {
 	puts("--------------------------------------------\n|   ~Welcome to l33t-m$n ~    v1337        |\n--------------------------------------------\n");
 	handle_msg();

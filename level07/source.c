@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void clear_stdin()
+void clear_stdin(void)
 {
 	char byte = 0;
 
@@ -14,7 +14,7 @@ void clear_stdin()
 	}
 }
 
-unsigned int get_unum()
+unsigned int get_unum(void)
 {
 	unsigned int nb;
 

@@ -15,7 +15,7 @@ int verify_user_pass(void *str)
 	return memcmp(str, "admin", 5);
 }
 
-int main()
+int main(void)
 {
 	char buffer[64];
 	int ret;

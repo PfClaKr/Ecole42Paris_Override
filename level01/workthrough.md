@@ -27,7 +27,7 @@ We can find one excutable file **level01**, who take standard input with Usernam
 \
 Check it with GDB, \
 \
-As we can there is a local variable, let's call it ```buffer```, with the size ```64```. \
+As we can there is a local variable, let's call it ```buffer```, with the size ```64```.
 ```sh
    0x080484d8 <+8>:     sub    $0x60,%esp
    0x080484db <+11>:    lea    0x1c(%esp),%ebx #  96 - 28 - 4 = 64
@@ -41,7 +41,7 @@ As we can there is a local variable, let's call it ```buffer```, with the size `
    0x08048574 <+164>:   call   0x8048370 <fgets@plt> # fgets(buffer, 100, stdin);
 ```
 It will be used to store our input later for password with ```fgets```, but the size is 100. \
-Here we go, buffer overflow. \
+Here we go, buffer overflow.
 ```sh
 (gdb) r
 Starting program: /home/users/level01/level01 
